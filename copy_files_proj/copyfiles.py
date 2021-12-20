@@ -24,7 +24,6 @@ def gui_find_all_mp3_files(*args):
                     try:
                         min_song_length = float(minimum_song_length.get()) # Convert user entered length to usable float
                         max_song_length = float(maximum_song_length.get()) # Convert user entered length to usable float
-                    except:
                         audio_string = root+"/"+file # Create the exact path to the file by combining the root plus a slash and the file.mp3 name
                         audio = MP3(audio_string) # Use path to specific MP3 file and store it as an MP3 variable
                         audio_length_in_secs = audio.info.length # Use .info.length to convert the MP3 variable to an interger containing the amount of seconds the MP3 file is
@@ -37,6 +36,8 @@ def gui_find_all_mp3_files(*args):
                                 file_string = root+"/"+file
                                 #shutil.copy(file_string,target_path) # Copy files from root entered path to user entered destination path
                                 #print(f'The "{extension}" file: "{file}" has been copied to the folder: "{target_path}"')
+                    except:
+                        pass
                 else:
                     if file.endswith((f'.{extension}')):
                                 file_string = root+"/"+file
@@ -45,6 +46,22 @@ def gui_find_all_mp3_files(*args):
     except:
         pass
     
+def gui_copy_mp3_files():  
+    original_path = original_music_path.get() # Convert user entered source path to usable string
+    target_path = target_music_path.get() # Convert user entered destination path to usable string
+    for root, dirs, files in os.walk(original_path): 
+        for file in files:
+            file_string = root+"/"+file
+            if file.endswith((".mp3")):                    
+                min_song_length = float(minimum_song_length.get()) # Convert user entered length to usable float
+                max_song_length = float(maximum_song_length.get()) # Convert user entered length to usable float            
+                audio_string = root+"/"+file # Create the exact path to the file by combining the root plus a slash and the file.mp3 name
+                audio = MP3(audio_string) # Use path to specific MP3 file and store it as an MP3 variable
+                audio_length_in_secs = audio.info.length # Use .info.length to convert the MP3 variable to an interger containing the amount of seconds the MP3 file is   
+                if audio_length_in_secs >= min_song_length and audio_length_in_secs <= max_song_length: # If statement to allow user to select range of file lengths user wants to copy to the given destination
+                    shutil.copy(audio_string,target_path) # Copy files from root entered path to user entered destination path
+                    print(f'The ".mp3" file: "{file}" has been copied to the folder: "{target_path}"\nThe ".mp3" file: "{file}" has a length of {audio_length_in_secs:.2f} seconds.') # Display message to user of the name of the files copied over, the target destination they were copied over to, and the length of the song that was copied over. 
+
     
 def gui_copy_files():
     try:
@@ -61,11 +78,7 @@ def gui_copy_files():
         pass
                 
 
-OPTIONS = [
-"jpg",
-"jpeg",
-"png"
-]
+OPTIONS = ["jpg", "jpeg", "png", "py"]
 
 
 root = Tk()
