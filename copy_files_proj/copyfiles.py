@@ -35,8 +35,8 @@ def gui_find_all_mp3_files(*args):
                         except:
                             if file.endswith((f'.{extension}')):
                                 file_string = root+"/"+file
-                                shutil.copy(file_string,target_path) # Copy files from root entered path to user entered destination path
-                                print(f'The "{extension}" file: "{file}" has been copied to the folder: "{target_path}"')
+                                #shutil.copy(file_string,target_path) # Copy files from root entered path to user entered destination path
+                                #print(f'The "{extension}" file: "{file}" has been copied to the folder: "{target_path}"')
                 else:
                     if file.endswith((f'.{extension}')):
                                 file_string = root+"/"+file
@@ -44,6 +44,29 @@ def gui_find_all_mp3_files(*args):
                                 print(f'The "{extension}" file: "{file}" has been copied to the folder: "{target_path}"')
     except:
         pass
+    
+    
+def gui_copy_files():
+    try:
+        original_path = original_music_path.get() # Convert user entered source path to usable string
+        target_path = target_music_path.get() # Convert user entered destination path to usable string
+        extension = extension_list_var.get()
+        for root, dirs, files in os.walk(original_path): 
+            for file in files:
+                file_string = root+"/"+file
+                if file.endswith((f'.{extension}')):
+                    shutil.copy(file_string,target_path) # Copy files from root entered path to user entered destination path
+                    print(f'The "{extension}" file: "{file}" has been copied to the folder: "{target_path}"')
+    except:
+        pass
+                
+
+OPTIONS = [
+"jpg",
+"jpeg",
+"png"
+]
+
 
 root = Tk()
 root.title("File Sorter")
@@ -70,10 +93,15 @@ ttk.Label(mainframe, text="Enter maximum length of song (in seconds): ").grid(co
 maximum_song_length_entry = ttk.Entry(mainframe, width=10, textvariable=maximum_song_length).grid(column=2, row=4, sticky=(W, E))
 
 extension_variable = StringVar()
-ttk.Label(mainframe, text="Enter the extension type you want to copy over. (ex: jpg): ").grid(column=1, row=6)
-extension_variable_entry = ttk.Entry(mainframe, width=10, textvariable=extension_variable).grid(column=2, row=6, sticky=(W, E))
+ttk.Label(mainframe, text="Enter the extension type you want to copy over. (ex: jpg): ").grid(column=1, row=5)
+extension_variable_entry = ttk.Entry(mainframe, width=10, textvariable=extension_variable).grid(column=2, row=5, sticky=(W, E))
+ttk.Button(mainframe, text="Copy files", command=gui_find_all_mp3_files).grid(column=0, row=5, sticky=W)
 
-ttk.Button(mainframe, text="Copy files", command=gui_find_all_mp3_files).grid(column=1, row=5, sticky=W)
+
+extension_list_var = StringVar()
+extension_list_var.set(OPTIONS[0])
+w = OptionMenu(mainframe, extension_list_var, *OPTIONS).grid(column=2, row=7, sticky=(W, E))
+ttk.Button(mainframe, text="Copy files from list", command=gui_copy_files).grid(column=1, row=7, sticky=W)
 
 for child in mainframe.winfo_children(): 
     child.grid_configure(padx=5, pady=2)
